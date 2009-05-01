@@ -21,22 +21,22 @@ class BlogPostsFeed(Feed):
         return obj.publish
 
 
-class BlogPostsByCategory(Feed):
+class BlogPostsByCategoryFeed(Feed):
     _site = Site.objects.get_current()
     title = '%s posts category feed' % _site.name
     
     def get_object(self, bits):
-        if len(bits) != 1:
+        try:
+            return Category.objects.get_by_slug_list(bits)
+        except (Category.DoesNotExist, Category.MultipleObjectsReturned):
             raise ObjectDoesNotExist
-        return Category.objects.get(slug__exact=bits[0])
 
     def link(self, obj):
-        if not obj:
-            raise FeedDoesNotExist
         return obj.get_absolute_url()
 
     def description(self, obj):
         return "Posts recently categorized as %s" % obj.title
-    
+
     def items(self, obj):
-        return obj.post_set.published()[:10]
+        descendants = obj.get_descendants(include_self=True)
+        return Post.objects.get_from_categories(descendants)[:10]

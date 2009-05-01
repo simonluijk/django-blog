@@ -1,9 +1,7 @@
 from datetime import datetime
-
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import date_based, list_detail
-
 from blog.models import Post, Category
 
 
@@ -33,28 +31,21 @@ def post_archive_month(request, year, month):
     )
 
 
-def post_detail(request, slug, year, month):
-    try:
-        date = datetime.strptime('%d %s' % (int(year), month), '%Y %b')
-    except ValueError:
-        raise Http404
+def post_detail(request, slug):
     return list_detail.object_detail(request,
-        queryset = Post.objects.published().filter(publish__year=date.year, publish__month=date.month),
+        queryset = Post.objects.published(),
         slug = slug
     )
 
 
-def category_list(request):
+def category(request, slugs):
+    try:
+        category = Category.objects.get_by_slug_list(slugs.split('/'))
+    except Category.DoesNotExist:
+        raise Http404
+    descendants = category.get_descendants(include_self=True)
     return list_detail.object_list(request,
-        queryset = Category.objects.all(),
-        template_name = 'blog/category_list.html'
-    )
-
-
-def category_detail(request, slug):
-    category = get_object_or_404(Category, slug__iexact=slug)
-    return list_detail.object_list(request,
-        queryset = category.post_set.published(),
+        queryset = Post.objects.get_from_categories(descendants),
         extra_context = {'category': category},
         template_name = 'blog/category_detail.html'
     )
