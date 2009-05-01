@@ -4,10 +4,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.auth.models import User
-from tagging.fields import TagField
 from blog.managers import PublicManager
 
-import tagging
 
 
 class Category(models.Model):
@@ -45,7 +43,6 @@ class Post(models.Model):
     created = models.DateTimeField(_('created'), editable=False)
     modified = models.DateTimeField(_('modified'), editable=False)
     categories = models.ManyToManyField(Category, blank=True)
-    tags = TagField()
     objects = PublicManager()
 
     class Meta:
