@@ -7,14 +7,6 @@ urlpatterns = patterns('',
         view=blog_views.post_detail,
         name='blog_detail'),
 
-    url(r'^archive/(?P<year>\d{4})/(?P<month>\w{3})/$',
-        view=blog_views.post_archive_month,
-        name='blog_archive_month'),
-
-    url(r'^archive/(?P<year>\d{4})/$',
-        view=blog_views.post_archive_year,
-        name='blog_archive_year'),
-
     url(r'^topic/(?P<slugs>[-\w/]+)/$',
         view=blog_views.category,
         name='blog_category'),

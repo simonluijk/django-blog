@@ -1,7 +1,5 @@
-from datetime import datetime
 from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.views.generic import date_based, list_detail
+from django.views.generic import list_detail
 from blog.models import Post, Category
 
 
@@ -10,24 +8,6 @@ def post_list(request, page=0):
         queryset = Post.objects.published(),
         paginate_by = 10,
         page = page
-    )
-
-
-def post_archive_year(request, year):
-    return date_based.archive_year(request,
-        queryset = Post.objects.published(),
-        year = year,
-        date_field = 'publish',
-        make_object_list = True
-    )
-
-
-def post_archive_month(request, year, month):
-    return date_based.archive_month(request,
-        queryset = Post.objects.published(),
-        year = year,
-        month = month,
-        date_field = 'publish'
     )
 
 
