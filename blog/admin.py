@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from blog.models import *
+from blog.models import Category, Post
 
 
 class CategoryAdmin(admin.ModelAdmin):
