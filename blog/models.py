@@ -110,3 +110,7 @@ class Post(models.Model):
         Return next post
         """
         return self.get_next_by_publish(status__gte=2)
+
+
+import blog.signals
+import blog.ping_services
