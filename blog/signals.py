@@ -24,19 +24,11 @@ def get_feed_url(instance):
     return reverse('feeds', args=['latest'])
 
 
-def create_signal(signal_creator):
-    try:
-        signal = signal_creator(content_func=get_html, feed_url_fun=get_feed_url)
-    except TypeError:
-        signal = signal_creator(content_func=get_html)
-
-    def inner_func(instance, **kwargs):
-        if instance.status == 2:
-            signal(instance, **kwargs)
-    return inner_func
-
-
 if 'pingback' in settings.INSTALLED_APPS:
     from pingback.client import ping_external_links, ping_directories
-    post_save.connect(create_signal(ping_external_links), sender=Post, weak=False)
-    post_save.connect(create_signal(ping_directories), sender=Post, weak=False)
+
+    sig = ping_external_links(content_func=get_html)
+    post_save.connect(sig, sender=Post, weak=False)
+
+    sig = ping_directories(feed_url_fun=get_feed_url)
+    post_save.connect(sig, sender=Post, weak=False)
