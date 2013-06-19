@@ -4,13 +4,13 @@ from blog.models import Category, Post
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display  = ('title', 'parent')
+    list_display = ('title', 'parent')
     prepopulated_fields = {'slug': ('title',)}
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display  = ('title', 'publish', 'status')
-    list_filter   = ('publish', 'categories', 'status')
+    list_display = ('title', 'publish', 'status')
+    list_filter = ('publish', 'categories', 'status')
     search_fields = ('title', 'body')
     prepopulated_fields = {'slug': ('title',)}
     fieldsets = (
@@ -23,7 +23,7 @@ class PostAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
             'fields': (
                 'allow_comments', 'slug', 'publish'
-            ), 
+            ),
         }),
     )
 

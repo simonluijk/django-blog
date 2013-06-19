@@ -11,7 +11,6 @@ class PostManager(Manager):
         today_end = datetime(today.year, today.month, today.day, 23, 59, 59)
         return self.get_query_set().filter(status__gte=2, publish__lte=today_end)
 
-
     def get_from_categories(self, categories):
         """
         Return publish posts in supplied categories

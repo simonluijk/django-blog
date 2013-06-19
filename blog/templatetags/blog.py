@@ -1,8 +1,8 @@
 import re
 
 from django import template
-from django.conf import settings
 from django.db import models
+
 
 Post = models.get_model('blog', 'post')
 Category = models.get_model('blog', 'category')
@@ -14,7 +14,6 @@ class LatestPosts(template.Node):
     def __init__(self, limit, var_name):
         self.limit = limit
         self.var_name = var_name
-
 
     def render(self, context):
         posts = Post.objects.published()[:int(self.limit)]

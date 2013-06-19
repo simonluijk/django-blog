@@ -4,18 +4,13 @@ from blog.models import Post, Category
 
 
 def post_list(request, page=0):
-    return list_detail.object_list(request,
-        queryset = Post.objects.published(),
-        paginate_by = 10,
-        page = page
-    )
+    return list_detail.object_list(request, queryset=Post.objects.published(),
+                                   paginate_by=10, page=page)
 
 
 def post_detail(request, slug):
-    return list_detail.object_detail(request,
-        queryset = Post.objects.published(),
-        slug = slug
-    )
+    return list_detail.object_detail(request, queryset=Post.objects.published(),
+                                     slug=slug)
 
 
 def category(request, slugs):
@@ -24,8 +19,7 @@ def category(request, slugs):
     except Category.DoesNotExist:
         raise Http404
     descendants = category.get_descendants(include_self=True)
-    return list_detail.object_list(request,
-        queryset = Post.objects.get_from_categories(descendants),
-        extra_context = {'category': category},
-        template_name = 'blog/category_detail.html'
-    )
+    queryset = Post.objects.get_from_categories(descendants)
+    return list_detail.object_list(request, queryset=queryset,
+                                   extra_context={'category': category},
+                                   template_name='blog/category_detail.html')

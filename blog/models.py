@@ -4,7 +4,6 @@ from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
-from django.contrib.auth.models import User
 from blog.managers import PostManager, CategoryManager
 
 
@@ -17,15 +16,12 @@ class Category(models.Model):
     parent = models.ForeignKey('self', verbose_name=_('parent'), null=True, blank=True, related_name='children')
     objects = CategoryManager()
 
-
     class Meta:
         verbose_name = _('category')
         verbose_name_plural = _('categories')
 
-
     def __unicode__(self):
         return u'%s' % self.title
-
 
     def get_slugs(self):
         slugs = []
@@ -33,7 +29,6 @@ class Category(models.Model):
             slugs.append(category.slug)
         slugs.append(self.slug)
         return slugs
-
 
     @permalink
     def get_absolute_url(self):
@@ -43,15 +38,7 @@ class Category(models.Model):
         })
 
 
-    @permalink
-    def get_feed_absolute_url(self):
-        slugs = u'/'.join(self.get_slugs())
-        return ('feeds', None, {
-            'url': u'%s/%s' % ('topic', slugs)
-        })
-
-
-mptt.register(Category, order_insertion_by=['title',])
+mptt.register(Category, order_insertion_by=['title', ])
 
 
 class Post(models.Model):
@@ -74,22 +61,18 @@ class Post(models.Model):
     modified = models.DateTimeField(_('modified'), editable=False)
     objects = PostManager()
 
-
     class Meta:
         verbose_name = _('post')
         verbose_name_plural = _('posts')
-        ordering  = ('-publish',)
+        ordering = ('-publish', )
         get_latest_by = 'publish'
-
 
     def __unicode__(self):
         return u'%s' % self.title
 
-
     @permalink
     def get_absolute_url(self):
         return ('blog_detail', None, {'slug': self.slug})
-
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -97,20 +80,14 @@ class Post(models.Model):
         self.modified = datetime.today()
         super(Post, self).save(*args, **kwargs)
 
-
     def get_previous_post(self):
         """
         Return previous post
         """
         return self.get_previous_by_publish(status__gte=2)
 
-
     def get_next_post(self):
         """
         Return next post
         """
         return self.get_next_by_publish(status__gte=2)
-
-
-import blog.signals
-import blog.ping_services

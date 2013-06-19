@@ -31,10 +31,6 @@
 >>> response.status_code
 200
 
->>> response = client.get(category2.get_feed_absolute_url())
->>> response.status_code
-200
-
 >>> response = client.get(post.get_absolute_url())
 >>> response.context['object']
 <Post: DJ Ango>

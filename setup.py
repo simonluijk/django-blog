@@ -11,23 +11,17 @@ else:
     version = "%d.%d" % version_tuple[:2]
 
 setup(
-    name = 'django-blog',
-    description = 'Yet another django blog',
-    version = version,
-    author = 'Simon Luijk',
-    author_email = 'simon@luijk.co.uk',
-    url = 'http://www.apricotwebsolutions.com/blog/',
-    packages = [
+    name='django-blog',
+    description='Yet another django blog',
+    version=version,
+    author='Simon Luijk',
+    author_email='simon@simonluijk.com',
+    url='http://www.apricotwebsolutions.com/blog/',
+    packages=[
         'blog',
         'blog.templatetags'
     ],
-    data_files = [
-        ['blog/templates/feeds', [
-            'blog/templates/feeds/latest_description.html',
-            'blog/templates/feeds/topic_description.html',
-        ]],
-    ],
-    classifiers = [
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',
