@@ -1,25 +1,35 @@
 from django.http import Http404
-from django.views.generic import list_detail
+from django.views.generic import DetailView, ListView
 from blog.models import Post, Category
 
 
-def post_list(request, page=0):
-    return list_detail.object_list(request, queryset=Post.objects.published(),
-                                   paginate_by=10, page=page)
+class PostDetailView(DetailView):
+    """ Post detail """
+    queryset = Post.objects.published()
 
 
-def post_detail(request, slug):
-    return list_detail.object_detail(request, queryset=Post.objects.published(),
-                                     slug=slug)
+class PostListView(ListView):
+    """ List posts """
+    paginate_by = 10
+    paginate_orphans = 4
+    queryset = Post.objects.published()
 
 
-def category(request, slugs):
-    try:
-        category = Category.objects.get_by_slug_list(slugs.split('/'))
-    except Category.DoesNotExist:
-        raise Http404
-    descendants = category.get_descendants(include_self=True)
-    queryset = Post.objects.get_from_categories(descendants)
-    return list_detail.object_list(request, queryset=queryset,
-                                   extra_context={'category': category},
-                                   template_name='blog/category_detail.html')
+class CategoryPostListView(ListView):
+    """ List posts in a category """
+    paginate_by = 10
+    template_name = 'blog/category_detail.html'
+
+    def get_queryset(self):
+        try:
+            slugs = self.kwargs['slugs'].split('/')
+            self.category = Category.objects.get_by_slug_list(slugs)
+        except Category.DoesNotExist:
+            raise Http404
+        descendants = self.category.get_descendants(include_self=True)
+        return Post.objects.get_from_categories(descendants)
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(CategoryPostListView, self).get_context_data(*args, **kwargs)
+        ctx['category'] = self.category
+        return ctx
