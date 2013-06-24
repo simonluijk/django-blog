@@ -1,6 +1,3 @@
-"""
-Based entirely on Django's own ``setup.py``.
-"""
 from distutils.core import setup
 
 # Dynamically calculate the version
@@ -16,7 +13,7 @@ setup(
     version=version,
     author='Simon Luijk',
     author_email='simon@simonluijk.com',
-    url='http://www.apricotwebsolutions.com/blog/',
+    url='https://github.com/simonluijk/django-blog',
     packages=[
         'blog',
         'blog.templatetags'
