@@ -8,7 +8,7 @@ else:
     version = "%d.%d" % version_tuple[:2]
 
 setup(
-    name='django-blog',
+    name='django-blog-sl',
     description='Yet another django blog',
     version=version,
     author='Simon Luijk',
