@@ -8,9 +8,7 @@ from blog.managers import PostManager, CategoryManager
 
 
 class Category(models.Model):
-    """
-    Blog category
-    """
+    """ Blog category """
     title = models.CharField(_('title'), max_length=100)
     slug = models.SlugField(_('slug'), unique=True)
     parent = models.ForeignKey('self', verbose_name=_('parent'), null=True, blank=True, related_name='children')
@@ -42,9 +40,7 @@ mptt.register(Category, order_insertion_by=['title', ])
 
 
 class Post(models.Model):
-    """
-    Blog post
-    """
+    """ Blog post """
     STATUS_CHOICES = (
         (1, _('Draft')),
         (2, _('Public')),
