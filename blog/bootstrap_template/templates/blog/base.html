@@ -1,1 +1,28 @@
 {% extends "site_base.html" %}
+
+{% load i18n %}
+{% load blog_tags %}
+
+{% block sidebar %}
+  {{ block.super }}
+
+  <div class="well">
+    <strong>{% trans "Blog categories" %}</strong>
+    {% get_blog_categories as categories %}
+    <ul class="nav">
+      {% for cat in categories %}
+        <li><a href="{{ cat.get_absolute_url }}">{{ cat }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="well">
+    <strong>{% trans "Recent blog posts" %}</strong>
+    {% get_latest_posts 5 as latest_posts %}
+    <ul class="nav">
+      {% for post in latest_posts %}
+        <li><a href="{{ post.get_absolute_url }}">{{ post }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
