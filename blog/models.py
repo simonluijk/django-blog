@@ -38,8 +38,8 @@ class Category(models.Model):
     @permalink
     def get_feed_absolute_url(self):
         slugs = u'/'.join(self.get_slugs())
-        return ('feeds', None, {
-            'url': u'%s/%s' % ('slugs', slugs)
+        return ('blog:feed_category', None, {
+            'slugs': slugs
         })
 
 

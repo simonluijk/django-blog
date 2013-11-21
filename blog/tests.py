@@ -1,43 +1,49 @@
-"""
->>> from django.test import Client
->>> from blog.models import Post, Category
->>> import datetime
->>> from django.core.urlresolvers import reverse
->>> client = Client()
+import datetime
 
->>> category = Category(title='Django', slug='django')
->>> category.save()
->>> category2 = Category(title='Rails', slug='rails', parent=category)
->>> category2.save()
+from django.test import TestCase
+from django.core.urlresolvers import reverse
 
->>> post = Post(title='DJ Ango', slug='django', body='Yo DJ! Turn that music up!', status=2, publish=datetime.datetime(2008,5,5,16,20))
->>> post.save()
+from .models import Post, Category
 
->>> post2 = Post(title='Where my grails at?', slug='where', body='I Can haz Holy plez?', status=2, publish=datetime.datetime(2008,4,2,11,11))
->>> post2.save()
 
->>> post.categories.add(category)
->>> post2.categories.add(category2)
+class BlogTestCase(TestCase):
+    def setUp(self):
+        self.category = Category(title='Django', slug='django')
+        self.category.save()
+        self.category2 = Category(title='Rails', slug='rails',
+                                  parent=self.category)
+        self.category2.save()
 
->>> response = client.get(reverse('blog_index'))
->>> response.context['object_list']
-[<Post: DJ Ango>, <Post: Where my grails at?>]
->>> response.status_code
-200
+        self.post = Post(title='DJ Ango', slug='django',
+                         body='Yo DJ! Turn that music up!', status=2,
+                         publish=datetime.datetime(2008, 5, 5, 16, 20))
+        self.post.save()
 
->>> response = client.get(category2.get_absolute_url())
->>> response.context['object_list']
-[<Post: Where my grails at?>]
->>> response.status_code
-200
+        self.post2 = Post(title='Where my grails at?', slug='where',
+                          body='I Can haz Holy plez?', status=2,
+                          publish=datetime.datetime(2008, 4, 2, 11, 11))
+        self.post2.save()
 
->>> response = client.get(category2.get_feed_absolute_url())
->>> response.status_code
-200
+        self.post.categories.add(self.category)
+        self.post2.categories.add(self.category2)
 
->>> response = client.get(post.get_absolute_url())
->>> response.context['object']
-<Post: DJ Ango>
->>> response.status_code
-200
-"""
+    def test_index(self):
+        response = self.client.get(reverse('blog:index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['object_list']), 2)
+        self.assertEqual(response.context['object_list'][0].title, 'DJ Ango')
+
+    def test_category_page(self):
+        response = self.client.get(self.category2.get_absolute_url())
+        self.assertEqual(len(response.context['object_list']), 1)
+        self.assertEqual(response.context['object_list'][0].title,
+                         'Where my grails at?')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(self.category2.get_feed_absolute_url())
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_page(self):
+        response = self.client.get(self.post.get_absolute_url())
+        self.assertEqual(response.context['object'].title, 'DJ Ango')
+        self.assertEqual(response.status_code, 200)
