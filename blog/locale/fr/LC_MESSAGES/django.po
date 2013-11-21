@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: django-blog-sl 1.2.1\n"
+"Report-Msgid-Bugs-To: simon@simonluijk.com\n"
+"POT-Creation-Date: 2013-11-21 20:28+0100\n"
+"PO-Revision-Date: 2014-11-21 20:30+0100\n"
+"Last-Translator: Simon Luijk <simon@simonluijk.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: admin.py:22
+msgid "Extra info"
+msgstr "Infos supplémentaires"
+
+#: models.py:11 models.py:56
+msgid "title"
+msgstr "titre"
+
+#: models.py:12 models.py:57
+msgid "slug"
+msgstr ""
+
+#: models.py:13
+msgid "parent"
+msgstr ""
+
+#: models.py:18
+msgid "category"
+msgstr "catégorie"
+
+#: models.py:19 models.py:64
+msgid "categories"
+msgstr "catégories"
+
+#: models.py:53
+msgid "Draft"
+msgstr "Brouillon"
+
+#: models.py:54
+msgid "Public"
+msgstr "Publique"
+
+#: models.py:58
+msgid "body"
+msgstr "message"
+
+#: models.py:59
+msgid "tease"
+msgstr "taquiner"
+
+#: models.py:60
+msgid "status"
+msgstr "statut"
+
+#: models.py:62
+msgid "allow comments"
+msgstr "autoriser les commentaires"
+
+#: models.py:63
+msgid "publish"
+msgstr "publier"
+
+#: models.py:65
+msgid "created"
+msgstr "créé"
+
+#: models.py:66
+msgid "modified"
+msgstr "modifié"
+
+#: models.py:70
+msgid "post"
+msgstr "message"
+
+#: models.py:71
+msgid "posts"
+msgstr "messages"
