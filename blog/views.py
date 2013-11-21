@@ -1,31 +1,23 @@
 from django.http import Http404
-from django.views.generic import list_detail
+from django.views.generic import ListView, DetailView
 from blog.models import Post, Category
 
 
-def post_list(request, page=0):
-    return list_detail.object_list(request,
-        queryset = Post.objects.published(),
-        paginate_by = 10,
-        page = page
-    )
+class PostListView(ListView):
+    model = Post
+    paginate_by = 10
+
+    def get_queryset(self):
+        if 'slugs' in self.kwargs:
+            try:
+                category = Category.objects.get_by_slugs(self.kwargs['slugs'])
+            except Category.DoesNotExist:
+                raise Http404
+            descendants = category.get_descendants(include_self=True)
+            return Post.objects.get_from_categories(descendants)
+        else:
+            return Post.objects.published()
 
 
-def post_detail(request, slug):
-    return list_detail.object_detail(request,
-        queryset = Post.objects.published(),
-        slug = slug
-    )
-
-
-def category(request, slugs):
-    try:
-        category = Category.objects.get_by_slug_list(slugs.split('/'))
-    except Category.DoesNotExist:
-        raise Http404
-    descendants = category.get_descendants(include_self=True)
-    return list_detail.object_list(request,
-        queryset = Post.objects.get_from_categories(descendants),
-        extra_context = {'category': category},
-        template_name = 'blog/category_detail.html'
-    )
+class PostDetailView(DetailView):
+    queryset = Post.objects.published()

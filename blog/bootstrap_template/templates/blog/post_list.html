@@ -1,0 +1,62 @@
+{% extends "blog/base.html" %}
+
+{% load i18n %}
+{% load markdown_deux_tags %}
+
+{% block head_title %}{% trans "Blog posts" %}{% ifnotequal page_obj.number 1 %} {% trans "page" %} {{ page_obj.number }}{% endifnotequal %}{% endblock %}
+
+{% block robots %}
+  {% if category %}
+    <meta name="robots" content="noindex,follow">
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+  <h1>{% trans "Blog posts" %}</h1>
+  {% for post in object_list %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">
+          <a href="{% url 'blog:detail' post.slug %}">{{ post.title }}</a>
+        </h2>
+      </div>
+      <div class="panel-body">
+        {{ post.tease|markdown }}
+      </div>
+    </div>
+  {% endfor %}
+
+  {% if is_paginated %}
+    <div class="text-center">
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li class="prev"><a href="?page={{ page_obj.previous_page_number }}">
+          &lsaquo;&lsaquo; {% trans "previous" %}
+        </a></li>
+      {% else %}
+        <li class="disabled prev"><a href="#">
+          &lsaquo;&lsaquo; {% trans "previous" %}
+        </a></li>
+      {% endif %}
+      {% for page in paginator.page_range %}
+        {% ifequal page page_obj.number %}
+          <li class="page active"><a href="#">{{ page }}</a></li>
+        {% else %}
+          <li><a href="?page={{ page }}" class="page">{{ page }}</a></li>
+        {% endifequal %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <li class="next"><a href="?page={{ page_obj.next_page_number }}">
+          {% trans "next" %} &rsaquo;&rsaquo;
+        </a></li>
+      {% else %}
+        <li class="disabled next"><a href="#">
+          {% trans "next" %} &rsaquo;&rsaquo;
+        </a></li>
+      {% endif %}
+    </ul>
+    </div>
+  {% endif %}
+{% endblock %}

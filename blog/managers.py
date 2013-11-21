@@ -1,5 +1,5 @@
-from datetime import date, datetime
 from django.db.models import Manager
+from django.utils.timezone import now
 
 
 class PostManager(Manager):
@@ -7,10 +7,8 @@ class PostManager(Manager):
         """
         Return published posts that are not in the future.
         """
-        today = date.today()
-        today_end = datetime(today.year, today.month, today.day, 23, 59, 59)
-        return self.get_query_set().filter(status__gte=2, publish__lte=today_end)
-
+        return self.get_query_set().filter(status=self.model.PUBLISHED,
+                                           publish__lte=now())
 
     def get_from_categories(self, categories):
         """
@@ -20,22 +18,25 @@ class PostManager(Manager):
 
 
 class CategoryManager(Manager):
-    def get_by_slug_list(self, slugs):
+    def get_by_slugs(self, slugs):
         """
         Get category from slug list
         """
-        tmp_key = ''
+        if isinstance(slugs, basestring):
+            slugs = slugs.split('/')
+
+        base_key = ''
         kwargs = {}
         for slug in reversed(slugs):
-            key = '%s%s' % (tmp_key, 'slug')
-            kwargs[str(key)] = str(slug)
-            if tmp_key:
-                tmp_key = '%s%s__' % (tmp_key, 'parent')
+            if base_key:
+                key = '{0}{1}'.format(base_key, 'slug')
+                base_key = '{0}{1}__'.format(base_key, 'parent')
             else:
-                tmp_key = 'parent__'
+                key = 'slug'
+                base_key = 'parent__'
+            kwargs[str(key)] = str(slug)
 
         category = self.get_query_set().filter(**kwargs).get()
         if not category.is_root_node() and len(slugs) is 1:
             raise self.model.DoesNotExist
-
         return category

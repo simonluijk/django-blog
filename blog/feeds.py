@@ -1,18 +1,22 @@
-from django.contrib.syndication.feeds import FeedDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.models import Site
-from django.contrib.syndication.feeds import Feed
+from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
-from blog.models import Post, Category
+
+from .models import Post, Category
 
 
-class BlogPostsFeed(Feed):
-    _site = Site.objects.get_current()
-    title = '%s feed' % _site.name
-    description = '%s posts feed.' % _site.name
+class LatestFeed(Feed):
+    def title(self):
+        site = Site.objects.get_current()
+        return '{0} latest feed'.format(site.name)
+
+    def description(self):
+        site = Site.objects.get_current()
+        return '{0} latest posts feed.'.format(site.name)
 
     def link(self):
-        return reverse('blog_index')
+        return reverse('blog:index')
 
     def items(self):
         return Post.objects.published()[:10]
@@ -21,22 +25,25 @@ class BlogPostsFeed(Feed):
         return obj.publish
 
 
-class BlogPostsByCategoryFeed(Feed):
-    _site = Site.objects.get_current()
-    title = '%s posts category feed' % _site.name
-    
-    def get_object(self, bits):
+class CategoryFeed(Feed):
+    def get_object(self, request, slugs):
         try:
-            return Category.objects.get_by_slug_list(bits)
+            return Category.objects.get_by_slugs(slugs)
         except (Category.DoesNotExist, Category.MultipleObjectsReturned):
             raise ObjectDoesNotExist
 
     def link(self, obj):
         return obj.get_absolute_url()
 
+    def title(self, obj):
+        return "{0} feed.".format(obj.title)
+
     def description(self, obj):
-        return "Posts recently categorized as %s" % obj.title
+        return "Posts categorized as {0}.".format(obj.title.lower())
 
     def items(self, obj):
         descendants = obj.get_descendants(include_self=True)
         return Post.objects.get_from_categories(descendants)[:10]
+
+    def item_pubdate(self, obj):
+        return obj.publish
