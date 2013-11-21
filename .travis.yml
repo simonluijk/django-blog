@@ -9,7 +9,7 @@ env:
   - DJANGO="django==1.5.5 --use-mirrors"
 
 install:
-  - pip install 
+  - pip install $DJANGO
   - pip install django-mptt django-markdown-deux --use-mirrors
   - export PYTHONPATH=.
 
