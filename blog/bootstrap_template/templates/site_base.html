@@ -1,0 +1,24 @@
+<!DOCTYPE html>{% load i18n %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block head_title_base %}{% block head_title %}{% endblock %}{% if SITE_NAME %} &ndash; {{ SITE_NAME }}{% endif %}{% endblock %}</title>
+    <meta name="description" content="{% block head_description %}{% endblock %}">
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-9 just">
+          {% block body %}{% endblock %}
+        </div>
+        <div class="col-sm-3">
+          {% block sidebar %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
