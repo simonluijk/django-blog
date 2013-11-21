@@ -52,7 +52,7 @@ if sys.argv[-1] == 'publish':
 
 
 setup(
-    name='django-blog',
+    name='django-blog-sl',
     version=version,
     url='http://github.com/simonluijk/django-blog',
     license='BSD',
